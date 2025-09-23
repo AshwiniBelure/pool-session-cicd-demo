@@ -11,15 +11,15 @@ on:
 
 jobs:
   build:
-
-    runs-on: self-hosted-AK
+    runs-on: [self-hosted, Windows, X64]
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js 24
-      uses: actions/setup-node@v4
-      with:
-        node-version: '24'
-    - run: node -v 
-    - run: npm -v 
-    - run: npm install
+      - uses: actions/checkout@v4
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node -v
+      - run: npm -v
+      - run: npm install
+
