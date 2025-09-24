@@ -1,25 +1,61 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: CI Pipeline for JS App
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
+  
 
 jobs:
   build:
-    runs-on: self-hosted
-
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 24
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-      - run: node -v
-      - run: npm -v
-      - run: npm install
+    - uses: actions/checkout@v4
+    - name: Use Node.js 24
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ secrets.NODE_VERSION }}
+    - run: node -v 
+    - run: npm -v 
+    - run: npm install
 
+  # security:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Use Node.js 24
+  #     uses: actions/setup-node@v4
+  #     with:
+  #       node-version: ${{ secrets.NODE_VERSION }}
+  #   - run: npm install
+    
+  #   - name: Install SonarQube Scanner
+  #     run: npm install -g sonar-scanner
+  #   - name: Run SonarQube Scan
+  #     run: |
+  #         sonar-scanner \
+  #           -Dsonar.projectKey=sai-project \
+  #           -Dsonar.sources=. \
+  #           -Dsonar.host.url='http://13.127.171.28:9000/' \
+  #           -Dsonar.login='squ_7179aebba0859c3cad3751b986b38483845c0a37'
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js 24
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ secrets.NODE_VERSION }}
+    - run: npm install pm2
+    - run: npm run pm2-stop
+    - run: npm run pm2-start
+
+
+   
